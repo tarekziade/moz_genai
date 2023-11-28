@@ -1,0 +1,6 @@
+requests
+transformers
+torch
+beautifulsoup4
+ntlk
+sentencepiece
