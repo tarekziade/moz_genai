@@ -71,3 +71,37 @@ Text length: 27590
 
 - t5-base : "The number of transistors in an integrated circuit (ic) doubles about every two years." - took 7.22s
 ```
+
+NER Extraction:
+
+```
+✗ bin/python ner.py
+Working on https://en.wikipedia.org/wiki/Sandman
+Text length: 9577
+Misc => Goodmaan O’Clock, Scandinavian, French Canadian, Bonhom Sept Heures, Sand, Der Sandmann, European, Romanian, Danish, Sandman
+Person => ius, ppel, Andersen, .A.Hoffmann, Hans Christian Andersen, Ole Lukøje, Ole, Ole Lukø, Hoffmann, ș Ene
+Location => Moon
+Organization => Ene
+
+Working on https://en.wikipedia.org/wiki/Named-entity_recognition
+Text length: 9705
+Person => Jim, rip
+Organization => cme Corp.Organization, Ford, Henry Ford, cme Corp, NER, Ford Motor Company
+Misc => English
+
+Working on https://en.wikipedia.org/wiki/Firefox
+Text length: 50846
+Organization => Amazon, Netscape, Mozilla Firefox, Google, Netscape Navigator, Silk Browser, Microsoft, Phoenix, Firefox, Internet Explorer, Mozilla Foundation, Mozilla Corporation
+Misc => Linux, Open BSD, zilla Application Suite, Net BSD, Solaris Unix, i OS, Internet Explorer6, Fire, Web Kit, Internet Explorer, Unix, Windows10, Quantum, ecko, Android, Mozilla, Firefox, Amazon Fire TV, mac OS, Free BSD
+
+Working on https://en.wikipedia.org/wiki/Mozilla
+Text length: 27948
+Misc => Mosaic, Mozilla Application Suite, Thunderbird, Netscape Navigator, Godzilla, Mozilla, Pocket, Bzilla
+Organization => Netscape, Mo Suite, Foundation, AOL, Netscape Commcator, Fire, Thunderbird, Android, Mozilla, Netscape Commcat, Firefox, Mozilla Foundation, Mozilla Corporation
+Person => Jamie Zawinski, Zawins
+
+Working on https://en.wikipedia.org/wiki/Moore%27s_law
+Text length: 27590
+Person => Gordon, Gordon Moore, Jensen Huang, Douglas, Moore
+Organization => Nvidia, Intel, Moore, Fairchild Semiconductor, Fairchild
+```
