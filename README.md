@@ -1,18 +1,10 @@
-Experiment
-==========
+# Experiment
 
 Extreme summarization of web pages using OpenAI and various local models.
 
 Results on an Apple M1:
 
 ```
-➜  summary git:(main) ✗ bin/python summarize.py
-/Users/tarekziade/Dev/summary/lib/python3.11/site-packages/transformers/models/t5/tokenization_t5_fast.py:160: FutureWarning: This tokenizer was incorrectly instantiated with a model max length of 512 which will be corrected in Transformers v5.
-For now, this behavior is kept to avoid breaking backwards compatibility when padding/encoding with `truncation is True`.
-- Be aware that you SHOULD NOT rely on t5-base automatically truncating your input to 512 when padding/encoding.
-- If you want to encode/pad to sequences longer than 512 you can either instantiate this tokenizer with `model_max_length` or pass `max_length` when encoding/padding.
-- To avoid this warning, please instantiate this tokenizer with `model_max_length` set to your preferred value.
-  warnings.warn(
 Models loaded
 t5-small-xsum => size: 230.81 MiB
 t5-small => size: 230.81 MiB
@@ -67,6 +59,4 @@ Text length: 27590
 - t5-small : "Moore's law is an observation and projection of a historical trend." - took 2.59s
 
 - t5-base : "The number of transistors in an integrated circuit (ic) doubles about every two years." - took 7.15s
-````
-
-
+```
