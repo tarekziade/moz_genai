@@ -3,7 +3,7 @@ import requests
 from transformers import (
     AutoTokenizer,
     AutoModelForSeq2SeqLM,
-    AutoModelForCausalLM,
+    BartForConditionalGeneration,
 )
 from bs4 import BeautifulSoup
 from transformers import MistralModel, MistralForCausalLM
@@ -15,24 +15,23 @@ import nltk
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
+MAX_LENGTH = 2048
+
+
+def build_model(name, model_klass=AutoModelForSeq2SeqLM):
+    return (
+        name,
+        model_klass.from_pretrained(name, return_dict=True),
+        AutoTokenizer.from_pretrained(name),
+    )
+
 
 MODELS = (
     ("openai", None, None),
-    (
-        "t5-small-xsum",
-        AutoModelForSeq2SeqLM.from_pretrained("t5-small", return_dict=True),
-        AutoTokenizer.from_pretrained("t5-small"),
-    ),
-    (
-        "t5-small",
-        AutoModelForSeq2SeqLM.from_pretrained("t5-small", return_dict=True),
-        AutoTokenizer.from_pretrained("t5-small"),
-    ),
-    (
-        "t5-base",
-        AutoModelForSeq2SeqLM.from_pretrained("t5-base", return_dict=True),
-        AutoTokenizer.from_pretrained("t5-base"),
-    ),
+    build_model("Falconsai/text_summarization"),
+    build_model("adasnew/t5-small-xsum"),
+    build_model("t5-small"),
+    build_model("t5-base"),
     # (
     #    "t5-large",
     #    AutoModelForSeq2SeqLM.from_pretrained("t5-large", return_dict=True),
@@ -95,7 +94,10 @@ def generate_summary(text, model, tokenizer):
         return response.choices[0].message.content
 
     inputs = tokenizer.encode(
-        "summarize: " + text, return_tensors="pt", truncation=True, max_length=2048
+        "summarize: " + text,
+        return_tensors="pt",
+        truncation=True,
+        max_length=MAX_LENGTH,
     )
 
     output = model.generate(
