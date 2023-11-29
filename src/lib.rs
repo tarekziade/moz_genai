@@ -1,19 +1,17 @@
 use std::ffi::CStr;
 use std::ffi::CString;
+use std::io::Write;
 use std::os::raw::c_char;
+use std::path::PathBuf;
 
 #[cfg(feature = "accelerate")]
 extern crate accelerate_src;
-use std::fs;
-use std::io::Write;
-use std::path::PathBuf;
-
-use candle_transformers::models::t5;
 
 use anyhow::{Error as E, Result};
 use candle_core::{DType, Device, Tensor};
 use candle_nn::VarBuilder;
 use candle_transformers::generation::LogitsProcessor;
+use candle_transformers::models::t5;
 use hf_hub::{api::sync::Api, Repo, RepoType};
 use tokenizers::Tokenizer;
 
@@ -79,11 +77,6 @@ impl T5ModelBuilder {
         };
         Ok(t5::T5ForConditionalGeneration::load(vb, &self.config).unwrap())
     }
-}
-
-fn read_file_to_string(file_path: &str) -> Result<String, std::io::Error> {
-    let contents = fs::read_to_string(file_path).unwrap();
-    Ok(contents)
 }
 
 #[no_mangle]
@@ -191,7 +184,7 @@ pub extern "C" fn free_memory(ptr: *mut c_char) {
         return;
     }
     unsafe {
-        CString::from_raw(ptr);
+        let _ = CString::from_raw(ptr);
     }
 }
 

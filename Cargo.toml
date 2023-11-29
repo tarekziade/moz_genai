@@ -1,5 +1,5 @@
 [package]
-name = "summary"
+name = "moz_genai"
 version = "0.1.0"
 edition = "2021"
 

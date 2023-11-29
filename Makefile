@@ -1,3 +1,10 @@
+.PHONY: build build-rust build-cpp
+
+
+run:
+	./summarizer
+
+build: build-rust build-cpp
 
 build-rust:
 	cargo build --release
