@@ -105,3 +105,24 @@ Text length: 27590
 Person => Gordon, Gordon Moore, Jensen Huang, Douglas, Moore
 Organization => Nvidia, Intel, Moore, Fairchild Semiconductor, Fairchild
 ```
+
+Full summarization by openai:
+
+```
+The Sandman is a folklore figure known for inducing sleep and dreams by sprinkling magical sand onto people's eyes.
+Originating in European folklore, he appears in various cultural iterations, such as E.T.A.
+Hoffmann's sinister portrayal in "Der Sandmann" and Hans Christian Andersen's more benevolent version in "Ole Lukøje."
+The character is featured in TV shows like "Unser Sandmännchen," "Nilus the Sandman," and "Bonne nuit les petits," and has appeared in films, including "The Santa Clause" series.
+In literature, the Sandman is seen in Neil Gaiman's comic series "The Sandman," where Dream of the Endless governs the world of dreams.
+Additionally, the Sandman has inspired numerous songs, such as "Mr. Sandman" by The Chordettes and Metallica's "Enter Sandman."
+Moreover, the figure has made appearances in various cultural references, including TV shows like "The Smurfs" and "Buffy the Vampire Slayer," and in music from artists like Roy Orbison, Rammstein, and Ed Sheeran. The Sandman also appears in modern adaptations like the Netflix series "The Sandman" and the film "Rise of the Guardians."
+```
+
+rust (candle+t5-small)
+
+```
+✗ cargo run --release
+
+ the sandman is a mythical character in many children's stories and books . he is a sandman who sprinkles sand into the eyes of children who would not sleep . the sandman is a genuinely sinister figure of his father's associate, coppelius, who threw sand in the eyes of children . he is also a sandman, a sandman, who is a genuinely sinister figure .
+118 tokens generated (27.64 token/s)
+```
