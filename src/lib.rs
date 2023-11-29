@@ -180,7 +180,7 @@ pub extern "C" fn summarize_text(input: *const c_char) -> *mut c_char {
     );
 
     // Convert the Rust string back to a C string and return the pointer
-    let result_c_string = CString::new(result_str.join(" ")).unwrap();
+    let result_c_string = CString::new(result_str.join("")).unwrap();
     result_c_string.into_raw()
 }
 
