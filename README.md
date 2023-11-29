@@ -118,11 +118,11 @@ Additionally, the Sandman has inspired numerous songs, such as "Mr. Sandman" by 
 Moreover, the figure has made appearances in various cultural references, including TV shows like "The Smurfs" and "Buffy the Vampire Slayer," and in music from artists like Roy Orbison, Rammstein, and Ed Sheeran. The Sandman also appears in modern adaptations like the Netflix series "The Sandman" and the film "Rise of the Guardians."
 ```
 
-rust (candle+t5-small)
+rust (Candle + Falconsai/text_summarization)
 
 ```
 ✗ cargo run --release
 
- the sandman is a mythical character in many children's stories and books . he is a sandman who sprinkles sand into the eyes of children who would not sleep . the sandman is a genuinely sinister figure of his father's associate, coppelius, who threw sand in the eyes of children . he is also a sandman, a sandman, who is a genuinely sinister figure .
-118 tokens generated (27.64 token/s)
+The Sandman is a mythical character in many children's stories and books . In Romanian folklore, he sprinkles sand or dust on or into the eyes of children who would not sleep . In the Netherlands, Belgium and parts of southern Africa, he is referred to as "Klaas Vaak" In the 1990s, Nilus the Sandman aired on French television . In the 1990s, Bonne nuit les petits aired on French television .
+110 tokens generated (27.71 token/s)
 ```
