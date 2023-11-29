@@ -1,6 +1,6 @@
 #include <iostream>
 #include <fstream>
-#include "../output/summary.h" // Include the generated header file
+#include "../target/summary.h" // Include the generated header file
 
 
 int main() {

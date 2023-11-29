@@ -10,5 +10,5 @@ build-rust:
 	cargo build --release
 
 build-cpp:
-	cd cpp; g++ -o ../moz_genai main.cpp -I../output -L../target/release -lmoz_genai
+	cd cpp; g++ -o ../moz_genai main.cpp -I../target -L../target/release -lmoz_genai
 

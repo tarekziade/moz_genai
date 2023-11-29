@@ -5,7 +5,7 @@ use std::path::PathBuf;
 
 fn main() {
     let crate_dir = env::var("CARGO_MANIFEST_DIR").unwrap();
-    let output_file = PathBuf::from(crate_dir.clone()).join("output/summary.h");
+    let output_file = PathBuf::from(crate_dir.clone()).join("target/summary.h");
 
     cbindgen::generate(crate_dir)
         .expect("Unable to generate bindings")
