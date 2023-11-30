@@ -13,7 +13,12 @@ use candle_nn::VarBuilder;
 use candle_transformers::generation::LogitsProcessor;
 use candle_transformers::models::t5;
 use hf_hub::{api::sync::Api, Repo, RepoType};
+use html5ever::parse_document;
+use html5ever::tendril::TendrilSink;
+use scraper::{Html, Selector};
 use tokenizers::Tokenizer;
+
+extern crate kuchiki;
 
 const DTYPE: DType = DType::F32;
 const MODEL_NAME: &str = "Falconsai/text_summarization";
@@ -80,8 +85,19 @@ impl T5ModelBuilder {
 }
 
 #[no_mangle]
-pub extern "C" fn summarize_text(input: *const c_char) -> *mut c_char {
-    // Safety: Ensure that the input pointer is not null
+pub extern "C" fn ping() -> *mut c_char {
+    let result_c_string = CString::new("Pong").unwrap();
+    result_c_string.into_raw()
+}
+
+pub fn trim_whitespace(s: &str) -> String {
+    // first attempt: allocates a vector and a string
+    let words: Vec<_> = s.split_whitespace().collect();
+    words.join(" ")
+}
+
+#[no_mangle]
+pub extern "C" fn summarize_html(input: *const c_char) -> *mut c_char {
     if input.is_null() {
         return std::ptr::null_mut();
     }
@@ -93,7 +109,58 @@ pub extern "C" fn summarize_text(input: *const c_char) -> *mut c_char {
         Err(_) => return std::ptr::null_mut(),
     };
 
-    let prompt = "summarize:".to_string() + input_str;
+    let parser = kuchiki::parse_html().one(input_str);
+    parser
+        .inclusive_descendants()
+        .filter(|node| {
+            node.as_element().map_or(false, |e| {
+                matches!(e.name.local.as_ref(), "script" | "style" | "noscript")
+            })
+        })
+        .collect::<Vec<_>>()
+        .iter()
+        .for_each(|node| node.detach());
+
+    let text = trim_whitespace(&parser.text_contents());
+    let result_str = _summarize_text(text.as_str());
+    // Convert the Rust string back to a C string and return the pointer
+    let result_c_string = CString::new(result_str.join("")).unwrap();
+    result_c_string.into_raw()
+}
+
+#[no_mangle]
+pub extern "C" fn summarize_text(input: *const c_char) -> *mut c_char {
+    // Safety: Ensure that the input pointer is not null
+    if input.is_null() {
+        return std::ptr::null_mut();
+    }
+    // Convert C string pointer to Rust string
+    let c_str = unsafe { CStr::from_ptr(input) };
+    let input_str = match c_str.to_str() {
+        Ok(s) => s,
+        Err(_) => return std::ptr::null_mut(),
+    };
+
+    let result_str = _summarize_text(input_str);
+
+    // Convert the Rust string back to a C string and return the pointer
+    let result_c_string = CString::new(result_str.join("")).unwrap();
+    result_c_string.into_raw()
+}
+
+// Function to deallocate the memory allocated for the returned C string
+#[no_mangle]
+pub extern "C" fn free_memory(ptr: *mut c_char) {
+    if ptr.is_null() {
+        return;
+    }
+    unsafe {
+        let _ = CString::from_raw(ptr);
+    }
+}
+
+fn _summarize_text(input: &str) -> Vec<String> {
+    let prompt = "summarize:".to_string() + input;
 
     let (builder, mut tokenizer) =
         T5ModelBuilder::load(MODEL_NAME.to_string(), "main".to_string()).unwrap();
@@ -171,21 +238,7 @@ pub extern "C" fn summarize_text(input: *const c_char) -> *mut c_char {
         output_token_ids.len(),
         output_token_ids.len() as f64 / dt.as_secs_f64(),
     );
-
-    // Convert the Rust string back to a C string and return the pointer
-    let result_c_string = CString::new(result_str.join("")).unwrap();
-    result_c_string.into_raw()
-}
-
-// Function to deallocate the memory allocated for the returned C string
-#[no_mangle]
-pub extern "C" fn free_memory(ptr: *mut c_char) {
-    if ptr.is_null() {
-        return;
-    }
-    unsafe {
-        let _ = CString::from_raw(ptr);
-    }
+    result_str
 }
 
 pub fn normalize_l2(v: &Tensor) -> Result<Tensor> {
