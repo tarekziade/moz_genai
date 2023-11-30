@@ -1,6 +1,6 @@
 [package]
 name = "moz_genai"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 license = "MPL-2.0"
 description = "Inference toolkit"
@@ -12,11 +12,12 @@ crate-type = ["cdylib"]
 cbindgen = "0.23"
 
 [dependencies]
-anyhow = "1.0.75"
+anyhow = "1.0"
+memmap2 = "0.5"
+serde_json = "1.0"
+
 candle-core = "0.3.1"
 candle-nn = "0.3.1"
 candle-transformers = "0.3.1"
 hf-hub = "0.3.2"
-memmap2 = "0.9.0"
-serde_json = "1.0.108"
 tokenizers = { version = "0.15.0", features = ["onig"] }
