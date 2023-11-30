@@ -13,12 +13,10 @@ use candle_nn::VarBuilder;
 use candle_transformers::generation::LogitsProcessor;
 use candle_transformers::models::t5;
 use hf_hub::{api::sync::Api, Repo, RepoType};
-use html5ever::parse_document;
-use html5ever::tendril::TendrilSink;
-use scraper::{Html, Selector};
 use tokenizers::Tokenizer;
 
 extern crate kuchiki;
+use crate::kuchiki::traits::TendrilSink;
 
 const DTYPE: DType = DType::F32;
 const MODEL_NAME: &str = "Falconsai/text_summarization";
@@ -122,7 +120,7 @@ pub extern "C" fn summarize_html(input: *const c_char) -> *mut c_char {
         .for_each(|node| node.detach());
 
     let text = trim_whitespace(&parser.text_contents());
-    let result_str = _summarize_text(text.as_str());
+    let result_str = _summarize_text(text.as_str(), Some(30));
     // Convert the Rust string back to a C string and return the pointer
     let result_c_string = CString::new(result_str.join("")).unwrap();
     result_c_string.into_raw()
@@ -141,7 +139,7 @@ pub extern "C" fn summarize_text(input: *const c_char) -> *mut c_char {
         Err(_) => return std::ptr::null_mut(),
     };
 
-    let result_str = _summarize_text(input_str);
+    let result_str = _summarize_text(input_str, None);
 
     // Convert the Rust string back to a C string and return the pointer
     let result_c_string = CString::new(result_str.join("")).unwrap();
@@ -159,7 +157,9 @@ pub extern "C" fn free_memory(ptr: *mut c_char) {
     }
 }
 
-fn _summarize_text(input: &str) -> Vec<String> {
+fn _summarize_text(input: &str, max_tokens: Option<usize>) -> Vec<String> {
+    let max_tokens = max_tokens.unwrap_or(150);
+
     let prompt = "summarize:".to_string() + input;
 
     let (builder, mut tokenizer) =
@@ -196,6 +196,7 @@ fn _summarize_text(input: &str) -> Vec<String> {
     let start = std::time::Instant::now();
 
     let mut result_str = vec![];
+    let mut generated_tokens = 0;
 
     for index in 0.. {
         if output_token_ids.len() > 512 {
@@ -228,8 +229,12 @@ fn _summarize_text(input: &str) -> Vec<String> {
         if let Some(text) = tokenizer.id_to_token(next_token_id) {
             let text = text.replace('▁', " ").replace("<0x0A>", "\n");
             print!("{text}");
+            generated_tokens += 1;
             std::io::stdout().flush().unwrap();
             result_str.push(text);
+            if generated_tokens >= max_tokens {
+                break;
+            }
         }
     }
     let dt = start.elapsed();
